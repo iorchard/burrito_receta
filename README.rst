@@ -33,13 +33,13 @@ run receta.sh script at openstack-helm-images.::
 Examples
 +++++++++
 
-To build a glance image with version 1.0.0.::
+To build a glance image with version 1.0.0::
 
     $ ./receta.sh -v 1.0.0 glance
     ...
     Complete to build jijisa/glance:1.0.0-yoga-ubuntu_jammy.
 
-If you want to build a nova image from stable/yoga-ovspatch branch,
+If you want to build a nova image from stable/yoga-ovspatch branch::
 
     $ ./receta.sh -v 1.0.0 -b stable/yoga-ovspatch nova
     ...
