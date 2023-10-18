@@ -1,0 +1,8 @@
+--- loci/scripts/setup_pip.sh	2023-10-18 17:02:57.106795736 +0900
++++ patches/loci/scripts/setup_pip.sh	2023-10-18 17:26:48.950863937 +0900
+@@ -40,3 +40,5 @@
+ # Deactivate the old bootstrap virtualenv and switch to the new one
+ deactivate
+ source /var/lib/openstack/bin/activate
++# Upgrade pip to the latest - Heechu Kim
++pip install --upgrade pip

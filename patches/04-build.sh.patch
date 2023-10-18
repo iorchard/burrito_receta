@@ -1,0 +1,150 @@
+--- openstack-helm-images/openstack/loci/build.sh	2023-10-18 17:04:28.110797030 +0900
++++ patches/openstack-helm-images/openstack/loci/build.sh	2023-10-18 17:31:40.546880772 +0900
+@@ -2,6 +2,7 @@
+ export PYTHONUNBUFFERED=1
+ SCRIPT=`realpath $0`
+ SCRIPT_DIR=`dirname ${SCRIPT}`
++
+ ## Only build from main folder
+ cd ${SCRIPT_DIR}/../..
+ 
+@@ -32,7 +33,7 @@
+ function build_loci_base_image {
+     base_img_tag=$1
+     pushd ${LOCI_SRC_DIR}
+-        docker build  --network=host -t ${base_img_tag} ${base_extra_build_args} dockerfiles/${BASE_IMAGE}
++        docker build  --network=host -t ${base_img_tag} ${base_extra_build_args} dockerfiles/${DISTRO}
+     popd
+ }
+ 
+@@ -67,13 +68,16 @@
+     fi
+     build_args="${build_args} --build-arg PROJECT=${projectname}"
+ 
+-    #Add PROJECT_REF argument if <project>_project_ref env var is defined
+-    #Or, use default openstack branch reference "OPENSTACK_VERSION"
++    # If PROJECT_REF is not set,
++    # Add PROJECT_REF argument if <project>_project_ref env var is defined
++    # Or, use default openstack branch reference "OPENSTACK_VERSION"
+     local this_project_ref="${project}_project_ref"
+-    if [[ -n ${!this_project_ref} ]]; then
+-      PROJECT_REF=${!this_project_ref}
+-    else
+-      PROJECT_REF=${OPENSTACK_VERSION}
++    if [[ -z ${PROJECT_REF} ]]; then
++      if [[ -n ${!this_project_ref} ]]; then
++        PROJECT_REF=${!this_project_ref}
++      else
++        PROJECT_REF=${OPENSTACK_VERSION}
++      fi
+     fi
+     #Remove stable/ from the tags, as '/' should not be in tag, and
+     #'stable' doesn't bring any extra information
+@@ -116,7 +120,8 @@
+         if [[ -n ${!this_wheels} ]]; then
+           build_args="${build_args} --build-arg WHEELS=${!this_wheels}"
+         else
+-          build_args="${build_args} --build-arg WHEELS=${REGISTRY_URI}requirements:${VERSION}-${REQUIREMENTS_TAGGED_PROJECT_REF}-${DISTRO}${requirements_extra_tags:-}"
++          #build_args="${build_args} --build-arg WHEELS=${REGISTRY_URI}requirements:${VERSION}-${REQUIREMENTS_TAGGED_PROJECT_REF}-${DISTRO}${requirements_extra_tags:-}"
++          build_args="${build_args} --build-arg WHEELS=${WHEELS}"
+         fi
+ 
+         #Add profiles argument if <project>_profiles env var is defined
+@@ -169,8 +174,8 @@
+ VERSION=${VERSION:-"latest"}
+ # The openstack branch to build, if no per project branch is given.
+ OPENSTACK_VERSION=${OPENSTACK_VERSION:-"master"}
+-# Sepcify OS distribution
+-DISTRO=${DISTRO:-"ubuntu_focal"}
++# Specify OS distribution
++DISTRO=${DISTRO:-"ubuntu_jammy"}
+ # extra build arguments for the base image. See loci's dockerfiles for
+ # arguments that could be used for example.
+ base_extra_build_args=${base_extra_build_args:-"--force-rm --pull --no-cache"}
+@@ -188,16 +193,14 @@
+ heat_dist_packages=${heat_dist_packages:-"curl"}
+ barbican_profiles=${barbican_profiles:-"fluent"}
+ barbican_pip_packages=${barbican_pip_packages:-"pycrypto"}
+-barbican_dist_packages=${barbican_dist_packages:-"'python3-dev gcc'"}
+-barbican_pip_args=${barbican_pip_args:-"'--only-binary :none:'"}
+ glance_profiles=${glance_profiles:-"'fluent ceph'"}
+ glance_pip_packages=${glance_pip_packages:-"'pycrypto python-swiftclient'"}
+-cinder_profiles=${cinder_profiles:-"'fluent lvm ceph qemu apache'"}
++cinder_profiles=${cinder_profiles:-"'fluent lvm ceph qemu apache nfs'"}
+ cinder_pip_packages=${cinder_pip_packages:-"'pycrypto python-swiftclient'"}
+ neutron_profiles=${neutron_profiles:-"'fluent linuxbridge openvswitch apache vpn'"}
+ neutron_dist_packages=${neutron_dist_packages:-"'jq ethtool lshw'"}
+ neutron_pip_packages=${neutron_pip_packages:-"'tap-as-a-service pycrypto'"}
+-nova_profiles=${nova_profiles:-"'fluent ceph linuxbridge openvswitch configdrive qemu apache migration'"}
++nova_profiles=${nova_profiles:-"'fluent ceph linuxbridge openvswitch configdrive qemu apache migration nfs'"}
+ nova_pip_packages=${nova_pip_packages:-"pycrypto"}
+ nova_dist_packages=${nova_dist_packages:-"net-tools"}
+ horizon_profiles=${horizon_profiles:-"'fluent apache'"}
+@@ -220,6 +223,8 @@
+ monasca_api_pip_packages=${monasca_api_pip_packages:-"influxdb cassandra-driver sqlalchemy"}
+ masakari_profiles=${masakari_profiles:-"'masakari'"}
+ masakari_monitors_profiles=${masakari_monitors_profiles:-"'masakari-monitors'"}
++
++echo $glance_pip_packages
+ ####################
+ # Action starts here
+ ####################
+@@ -237,10 +242,7 @@
+ # Test if BASE_IMAGE should be built from LOCI dockerfiles.
+ case ${BASE_IMAGE} in
+     ubuntu)
+-        #Mark the need to build image from LOCI Dockerfiles
+         BUILD_IMAGE="yes"
+-        #Makes sure the name of the distro is consistent with other OSH-images.
+-        DISTRO="ubuntu_focal"
+         ;;
+     leap15)
+         BUILD_IMAGE="yes"
+@@ -248,7 +250,7 @@
+         ;;
+     centos)
+         BUILD_IMAGE="yes"
+-        DISTRO="centos_7"
++        DISTRO="centos"
+         ;;
+     debian)
+         BUILD_IMAGE="yes"
+@@ -261,15 +263,16 @@
+ esac
+ 
+ if [[ "${BUILD_IMAGE}" == "yes" ]]; then
+-    LOCI_ARG_FROM="${REGISTRY_URI}base:${VERSION}-${DISTRO}"
++    #LOCI_ARG_FROM="${REGISTRY_URI}base:${VERSION}-${DISTRO}"
++    LOCI_ARG_FROM="${REGISTRY_URI}base:${DISTRO}"
+     build_loci_base_image $LOCI_ARG_FROM
+-    docker push $LOCI_ARG_FROM
++    #docker push $LOCI_ARG_FROM
+ else
+     fetch_base_image
+     LOCI_ARG_FROM="${BASE_IMAGE}"
+ fi
+ 
+-BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cinder monasca_api neutron neutron_sriov nova horizon senlin magnum ironic manila tacker'}
++BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cinder monasca_api neutron neutron_sriov nova horizon senlin magnum ironic'}
+ projects=( ${BUILD_PROJECTS} )
+ 
+ pushd ${LOCI_SRC_DIR}
+@@ -278,7 +281,7 @@
+     if [[ "${projects[0]}" == "requirements" ]]; then
+         get_project_image_build_arguments ${projects[0]}
+         eval "${docker_build_cmd}"
+-        docker push ${tag}
++        #docker push ${tag}
+         unset projects[0]
+     fi
+     # clear action from previous install (can be in dev local builds)
+@@ -286,7 +289,8 @@
+     # Run the rest of the projects with parallel
+     for project in ${projects[@]}; do
+         get_project_image_build_arguments $project
+-        echo "${docker_build_cmd} && docker push ${tag}" >> ${LOG_PREFIX}actions
++        #echo "${docker_build_cmd} && docker push ${tag}" >> ${LOG_PREFIX}actions
++        echo "${docker_build_cmd}" >> ${LOG_PREFIX}actions
+     done
+     parallel --group -a ${LOG_PREFIX}actions
+ popd

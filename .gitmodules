@@ -1,0 +1,6 @@
+[submodule "loci"]
+	path = loci
+	url = https://git.openstack.org/openstack/loci.git
+[submodule "openstack-helm-images"]
+	path = openstack-helm-images
+	url = https://github.com/openstack/openstack-helm-images

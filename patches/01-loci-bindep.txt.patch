@@ -1,0 +1,10 @@
+--- loci/bindep.txt	2023-10-18 17:02:57.102795736 +0900
++++ patches/loci/bindep.txt	2023-10-18 17:26:24.110862434 +0900
+@@ -86,6 +86,7 @@
+ multipath-tools                      [platform:dpkg (cinder purestorage) (nova purestorage)]
+ mysql                                [platform:rpm placement]
+ mysql-client                         [platform:dpkg placement]
++nfs-common                           [platform:dpkg (cinder nfs) (nova nfs)]
+ nginx                                [nginx]
+ # latest nss-devel breaks python-nss on centos:9
+ nss-devel-3.53.1-17.el8_3            [platform:rpm requirements]
