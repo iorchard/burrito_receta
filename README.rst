@@ -35,7 +35,7 @@ run receta.sh script at openstack-helm-images.::
      -b --branch    OpenStack source branch name (default: stable/yoga).
      -v --version   Version in image tag.
      <openstack_project_name>
-     keystone barbican glance cinder neutron nova horizon
+     keystone glance cinder neutron nova horizon
 
 Examples
 +++++++++
