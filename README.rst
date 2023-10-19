@@ -8,10 +8,17 @@ It depends on loci and openstack-helm-images project.
 * loci: https://git.openstack.org/openstack/loci.git
 * openstack-helm-images: https://opendev.org/openstack/openstack-helm-images/
 
-Patch the upstream sources
----------------------------
+Prepare
+--------
 
-Before building openstack images, we need to patch the upstream sources.::
+`Install Docker Engine <https://docs.docker.com/engine/install/>`.
+
+Install parallel package.::
+
+    $ sudo apt -y install parallel # for debian-based distribution
+    $ sudo dnf -y install parallel # for rhel-based distribution
+
+Patch the upstream sources.::
 
     $ ./patch.sh
 
@@ -44,5 +51,11 @@ If you want to build a nova image from stable/yoga-ovspatch branch::
     $ ./receta.sh -v 1.0.0 -b stable/yoga-ovspatch nova
     ...
     Complete to build jijisa/nova:1.0.0-yoga-ovspatch-ubuntu_jammy.
+
+Then, you can push the image to your local registry.::
+
+    $ docker tag jijisa/glance:1.0.0-yoga-ubuntu_jammy \
+        <your_repo>/glance:1.0.0-yoga-ubuntu_jammy
+    $ docker push <your_repo>/glance:1.0.0-yoga-ubuntu_jammy
 
 
