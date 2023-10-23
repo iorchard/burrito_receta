@@ -1,5 +1,5 @@
---- openstack-helm-images/openstack/loci/build.sh	2023-10-18 17:04:28.110797030 +0900
-+++ patches/openstack-helm-images/openstack/loci/build.sh	2023-10-18 17:31:40.546880772 +0900
+--- openstack-helm-images/openstack/loci/build.sh	2023-10-23 18:07:02.818947652 +0900
++++ patches/openstack-helm-images/openstack/loci/build.sh	2023-10-23 18:11:13.094906080 +0900
 @@ -2,6 +2,7 @@
  export PYTHONUNBUFFERED=1
  SCRIPT=`realpath $0`
@@ -17,7 +17,7 @@
      popd
  }
  
-@@ -67,13 +68,16 @@
+@@ -67,24 +68,31 @@
      fi
      build_args="${build_args} --build-arg PROJECT=${projectname}"
  
@@ -40,7 +40,25 @@
      fi
      #Remove stable/ from the tags, as '/' should not be in tag, and
      #'stable' doesn't bring any extra information
-@@ -116,7 +120,8 @@
+     TAGGED_PROJECT_REF=${PROJECT_REF/stable\//}
+     build_args="${build_args} --build-arg PROJECT_REF=${PROJECT_REF}"
+ 
+-
+     #Add PROJECT_REPO argument if <project>_project_repo env var is defined
+     local this_project_repo="${project}_project_repo"
+-    if [[ -n ${!this_project_repo} ]]; then
+-      build_args="${build_args} --build-arg PROJECT_REPO=${!this_project_repo}"
++    # If PROJECT_REPO is set by --repo parameter,
++    if [[ -n "${PROJECT_REPO}" ]]; then
++      build_args="${build_args} --build-arg PROJECT_REPO=${PROJECT_REPO}"
++    else
++      if [[ -n ${!this_project_repo} ]]; then
++        build_args="${build_args} --build-arg PROJECT_REPO=${!this_project_repo}"
++      fi
+     fi
+ 
+     if [[ "$project" == "requirements" ]]; then
+@@ -116,7 +124,8 @@
          if [[ -n ${!this_wheels} ]]; then
            build_args="${build_args} --build-arg WHEELS=${!this_wheels}"
          else
@@ -50,7 +68,7 @@
          fi
  
          #Add profiles argument if <project>_profiles env var is defined
-@@ -169,8 +174,8 @@
+@@ -169,8 +178,8 @@
  VERSION=${VERSION:-"latest"}
  # The openstack branch to build, if no per project branch is given.
  OPENSTACK_VERSION=${OPENSTACK_VERSION:-"master"}
@@ -61,7 +79,7 @@
  # extra build arguments for the base image. See loci's dockerfiles for
  # arguments that could be used for example.
  base_extra_build_args=${base_extra_build_args:-"--force-rm --pull --no-cache"}
-@@ -188,16 +193,14 @@
+@@ -188,16 +197,14 @@
  heat_dist_packages=${heat_dist_packages:-"curl"}
  barbican_profiles=${barbican_profiles:-"fluent"}
  barbican_pip_packages=${barbican_pip_packages:-"pycrypto"}
@@ -80,7 +98,7 @@
  nova_pip_packages=${nova_pip_packages:-"pycrypto"}
  nova_dist_packages=${nova_dist_packages:-"net-tools"}
  horizon_profiles=${horizon_profiles:-"'fluent apache'"}
-@@ -220,6 +223,8 @@
+@@ -220,6 +227,8 @@
  monasca_api_pip_packages=${monasca_api_pip_packages:-"influxdb cassandra-driver sqlalchemy"}
  masakari_profiles=${masakari_profiles:-"'masakari'"}
  masakari_monitors_profiles=${masakari_monitors_profiles:-"'masakari-monitors'"}
@@ -89,7 +107,7 @@
  ####################
  # Action starts here
  ####################
-@@ -237,10 +242,7 @@
+@@ -237,10 +246,7 @@
  # Test if BASE_IMAGE should be built from LOCI dockerfiles.
  case ${BASE_IMAGE} in
      ubuntu)
@@ -100,7 +118,7 @@
          ;;
      leap15)
          BUILD_IMAGE="yes"
-@@ -248,7 +250,7 @@
+@@ -248,7 +254,7 @@
          ;;
      centos)
          BUILD_IMAGE="yes"
@@ -109,7 +127,7 @@
          ;;
      debian)
          BUILD_IMAGE="yes"
-@@ -261,15 +263,16 @@
+@@ -261,15 +267,16 @@
  esac
  
  if [[ "${BUILD_IMAGE}" == "yes" ]]; then
@@ -129,7 +147,7 @@
  projects=( ${BUILD_PROJECTS} )
  
  pushd ${LOCI_SRC_DIR}
-@@ -278,7 +281,7 @@
+@@ -278,7 +285,7 @@
      if [[ "${projects[0]}" == "requirements" ]]; then
          get_project_image_build_arguments ${projects[0]}
          eval "${docker_build_cmd}"
@@ -138,7 +156,7 @@
          unset projects[0]
      fi
      # clear action from previous install (can be in dev local builds)
-@@ -286,7 +289,8 @@
+@@ -286,7 +293,8 @@
      # Run the rest of the projects with parallel
      for project in ${projects[@]}; do
          get_project_image_build_arguments $project

@@ -84,11 +84,15 @@ function get_project_image_build_arguments {
     TAGGED_PROJECT_REF=${PROJECT_REF/stable\//}
     build_args="${build_args} --build-arg PROJECT_REF=${PROJECT_REF}"
 
-
     #Add PROJECT_REPO argument if <project>_project_repo env var is defined
     local this_project_repo="${project}_project_repo"
-    if [[ -n ${!this_project_repo} ]]; then
-      build_args="${build_args} --build-arg PROJECT_REPO=${!this_project_repo}"
+    # If PROJECT_REPO is set by --repo parameter,
+    if [[ -n "${PROJECT_REPO}" ]]; then
+      build_args="${build_args} --build-arg PROJECT_REPO=${PROJECT_REPO}"
+    else
+      if [[ -n ${!this_project_repo} ]]; then
+        build_args="${build_args} --build-arg PROJECT_REPO=${!this_project_repo}"
+      fi
     fi
 
     if [[ "$project" == "requirements" ]]; then

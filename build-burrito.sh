@@ -5,10 +5,12 @@ SCRIPT_DIR=$(dirname ${SCRIPT})
 
 OSNAMES=(keystone glance cinder neutron nova horizon)
 function USAGE() {
-  echo "USAGE: $(basename $0) [-h] [-b] [-v] <openstack_project_name>"
+  echo "USAGE: $(basename $0) [-h] [-b] [-r] [-v] <openstack_project_name>"
   echo 
   echo " -h --help      Display this help message."
-  echo " -b --branch    OpenStack source branch name (default: stable/yoga)."
+  echo " -b --branch    OpenStack project branch name (default: stable/yoga)"
+  echo " -r --repo      OpenStack project repo"
+  echo "                (default: https://opendev.org/openstack/<project>)"
   echo " -v --version   Version in image tag."
   echo " <openstack_project_name>"
   echo " ${OSNAMES[@]}"
@@ -23,7 +25,7 @@ function check_project_name() {
   done
   return 1
 }
-VALID_ARGS=$(getopt -o hb:p:v: --long help,branch:,prefix:,version: -- "$@")
+VALID_ARGS=$(getopt -o hb:p:r:v: --long help,branch:,prefix:,repo:,version: -- "$@")
 if [[ $? -ne 0 ]]; then
   exit 1;
 fi
@@ -36,6 +38,10 @@ while true; do
       ;;
     -b | --branch)
       PROJECT_REF="$2"
+      shift 2
+      ;;
+    -r | --repo)
+      PROJECT_REPO="$2"
       shift 2
       ;;
     -v | --version)
@@ -62,10 +68,9 @@ REGISTRY_URI=${REGISTRY_URI:-jijisa/}
 
 BASE_IMAGE="ubuntu"
 WHEELS="jijisa/requirements:skb-yoga-ubuntu_jammy"
-requirements_project_repo="https://github.com/jijisa/openstack-requirements.git"
-nova_project_repo="https://github.com/jijisa/openstack-nova.git"
-nova_project_ref="stable/yoga-ovspatch"
-cinder_project_repo="https://github.com/jijisa/openstack-cinder.git"
+#nova_project_repo="https://github.com/jijisa/openstack-nova.git"
+#nova_project_ref="stable/yoga-ovspatch"
+#cinder_project_repo="https://github.com/jijisa/openstack-cinder.git"
 DISTRO="ubuntu_jammy"
 LOCI_SRC_DIR="${SCRIPT_DIR}/../../../loci"
 
