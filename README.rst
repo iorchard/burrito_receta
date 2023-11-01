@@ -8,6 +8,13 @@ It depends on loci and openstack-helm-images project.
 * loci: https://git.openstack.org/openstack/loci.git
 * openstack-helm-images: https://opendev.org/openstack/openstack-helm-images/
 
+Get
+----
+
+Get burrito_receta source.::
+
+    $ git clone --recursive https://github.com/iorchard/burrito_receta.git
+
 Prepare
 --------
 
@@ -20,6 +27,7 @@ Install parallel package.::
 
 Patch the upstream sources.::
 
+    $ cd burrito_receta
     $ ./patch.sh
 
 Build an openstack-helm image
@@ -27,8 +35,6 @@ Build an openstack-helm image
 
 To build an openstack-helm image,
 run receta.sh script at openstack-helm-images.::
-
-USAGE: receta.sh [-h] [-b] [-r] [-v] <openstack_project_name>
 
     $ ./receta.sh
     USAGE: receta.sh [-h] [-b] [-r] [-v] <openstack_project_name>
