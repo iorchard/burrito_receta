@@ -1,6 +1,6 @@
-diff -aruN loci/dockerfiles/centos8_stream/CentOS.repo patches/loci/dockerfiles/centos8_stream/CentOS.repo
+diff -aruN loci/dockerfiles/centos8_stream/CentOS.repo loci/dockerfiles/centos8_stream/CentOS.repo
 --- loci/dockerfiles/centos8_stream/CentOS.repo	1970-01-01 09:00:00.000000000 +0900
-+++ patches/loci/dockerfiles/centos8_stream/CentOS.repo	2023-11-17 14:06:44.492425802 +0900
++++ loci/dockerfiles/centos8_stream/CentOS.repo	2023-11-17 14:06:44.492425802 +0900
 @@ -0,0 +1,46 @@
 +[appstream]
 +name=CentOS Linux $releasever - AppStream
@@ -50,7 +50,7 @@ diff -aruN loci/dockerfiles/centos8_stream/CentOS.repo patches/loci/dockerfiles/
 +
 diff -aruN loci/dockerfiles/centos8_stream/Dockerfile patches/loci/dockerfiles/centos8_stream/Dockerfile
 --- loci/dockerfiles/centos8_stream/Dockerfile	1970-01-01 09:00:00.000000000 +0900
-+++ patches/loci/dockerfiles/centos8_stream/Dockerfile	2023-11-17 16:25:01.748412738 +0900
++++ loci/dockerfiles/centos8_stream/Dockerfile	2023-11-17 16:25:01.748412738 +0900
 @@ -0,0 +1,16 @@
 +ARG FROM=quay.io/centos/centos:stream8
 +FROM ${FROM}
@@ -70,7 +70,7 @@ diff -aruN loci/dockerfiles/centos8_stream/Dockerfile patches/loci/dockerfiles/c
 +RUN find /etc/yum.repos.d/ -type f ! -name 'CentOS.repo' -delete
 diff -aruN loci/dockerfiles/centos8_stream/RPM-GPG-KEY-CentOS-SIG-Cloud patches/loci/dockerfiles/centos8_stream/RPM-GPG-KEY-CentOS-SIG-Cloud
 --- loci/dockerfiles/centos8_stream/RPM-GPG-KEY-CentOS-SIG-Cloud	1970-01-01 09:00:00.000000000 +0900
-+++ patches/loci/dockerfiles/centos8_stream/RPM-GPG-KEY-CentOS-SIG-Cloud	2023-11-01 18:59:14.708471186 +0900
++++ loci/dockerfiles/centos8_stream/RPM-GPG-KEY-CentOS-SIG-Cloud	2023-11-01 18:59:14.708471186 +0900
 @@ -0,0 +1,20 @@
 +-----BEGIN PGP PUBLIC KEY BLOCK-----
 +Version: GnuPG v2.0.22 (GNU/Linux)
