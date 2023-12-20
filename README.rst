@@ -30,8 +30,8 @@ Patch the upstream sources.::
     $ cd burrito_receta
     $ ./patch.sh
 
-Build an openstack-helm image
--------------------------------
+Build openstack-helm image
+---------------------------
 
 To build an openstack-helm image,
 run receta.sh script at openstack-helm-images.::
@@ -71,4 +71,23 @@ You can push the image to your local registry.::
     $ docker tag jijisa/glance:1.0.0-yoga-ubuntu_jammy \
         <your_repo>/glance:1.0.0-yoga-ubuntu_jammy
     $ docker push <your_repo>/glance:1.0.0-yoga-ubuntu_jammy
+
+
+Build mariadb image
+--------------------
+
+Go to openstack-helm-images/mariadb and run build.sh script.::
+
+    $ cd openstack-helm-images/mariadb
+    $ ./build.sh
+    ...
+    Successfully built 1ae9a15427f6
+    Successfully tagged jijisa/mariadb:10.6.16-ubuntu_focal
+
+Push the image to your local registry.::
+
+    $ docker tag jijisa/mariadb:10.6.16-ubuntu_focal \
+        <your_repo>/mariadb:10.6.16-ubuntu_focal
+    $ docker push <your_repo>/mariadb:10.6.16-ubuntu_focal
+
 
