@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 export PYTHONUNBUFFERED=1
 SCRIPT=`realpath $0`
 SCRIPT_DIR=`dirname ${SCRIPT}`
@@ -228,7 +228,6 @@ monasca_api_pip_packages=${monasca_api_pip_packages:-"influxdb cassandra-driver 
 masakari_profiles=${masakari_profiles:-"'masakari'"}
 masakari_monitors_profiles=${masakari_monitors_profiles:-"'masakari-monitors'"}
 
-echo $glance_pip_packages
 ####################
 # Action starts here
 ####################
@@ -254,7 +253,6 @@ case ${BASE_IMAGE} in
         ;;
     centos)
         BUILD_IMAGE="yes"
-        DISTRO="centos"
         ;;
     debian)
         BUILD_IMAGE="yes"
@@ -270,6 +268,7 @@ if [[ "${BUILD_IMAGE}" == "yes" ]]; then
     #LOCI_ARG_FROM="${REGISTRY_URI}base:${VERSION}-${DISTRO}"
     LOCI_ARG_FROM="${REGISTRY_URI}base:${DISTRO}"
     build_loci_base_image $LOCI_ARG_FROM
+    [[ "${BASE_IMAGE_ONLY}" == "yes" ]] && exit 0 || true
     #docker push $LOCI_ARG_FROM
 else
     fetch_base_image

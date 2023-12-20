@@ -1,0 +1,13 @@
+--- loci/scripts/install_packages.sh	2023-10-18 17:02:57.106795736 +0900
++++ patches/loci/scripts/install_packages.sh	2023-12-20 11:59:51.301693737 +0900
+@@ -33,7 +33,9 @@
+             fi
+             ;;
+         centos)
+-            yum -y --setopt=skip_missing_names_on_install=False install ${PACKAGES[@]} ${DIST_PACKAGES}
++            dnf -y install epel-release
++            dnf install -y https://repos.fedorapeople.org/repos/openstack/openstack-yoga/rdo-release-yoga-1.el8.noarch.rpm
++            dnf -y --setopt=skip_missing_names_on_install=False install ${PACKAGES[@]} ${DIST_PACKAGES}
+             ;;
+         *)
+             echo "Unknown distro: ${distro}"

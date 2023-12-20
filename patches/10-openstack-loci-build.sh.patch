@@ -1,6 +1,8 @@
---- openstack-helm-images/openstack/loci/build.sh	2023-10-23 18:07:02.818947652 +0900
-+++ patches/openstack-helm-images/openstack/loci/build.sh	2023-10-23 18:11:13.094906080 +0900
-@@ -2,6 +2,7 @@
+--- openstack-helm-images/openstack/loci/build.sh	2023-10-23 18:19:16.966814083 +0900
++++ patches/openstack-helm-images/openstack/loci/build.sh	2023-12-20 11:53:10.501814088 +0900
+@@ -1,7 +1,8 @@
+-#!/bin/bash
++#!/bin/bash -x
  export PYTHONUNBUFFERED=1
  SCRIPT=`realpath $0`
  SCRIPT_DIR=`dirname ${SCRIPT}`
@@ -98,16 +100,15 @@
  nova_pip_packages=${nova_pip_packages:-"pycrypto"}
  nova_dist_packages=${nova_dist_packages:-"net-tools"}
  horizon_profiles=${horizon_profiles:-"'fluent apache'"}
-@@ -220,6 +227,8 @@
+@@ -220,6 +227,7 @@
  monasca_api_pip_packages=${monasca_api_pip_packages:-"influxdb cassandra-driver sqlalchemy"}
  masakari_profiles=${masakari_profiles:-"'masakari'"}
  masakari_monitors_profiles=${masakari_monitors_profiles:-"'masakari-monitors'"}
 +
-+echo $glance_pip_packages
  ####################
  # Action starts here
  ####################
-@@ -237,10 +246,7 @@
+@@ -237,10 +245,7 @@
  # Test if BASE_IMAGE should be built from LOCI dockerfiles.
  case ${BASE_IMAGE} in
      ubuntu)
@@ -118,16 +119,15 @@
          ;;
      leap15)
          BUILD_IMAGE="yes"
-@@ -248,7 +254,7 @@
+@@ -248,7 +253,6 @@
          ;;
      centos)
          BUILD_IMAGE="yes"
 -        DISTRO="centos_7"
-+        DISTRO="centos"
          ;;
      debian)
          BUILD_IMAGE="yes"
-@@ -261,15 +267,16 @@
+@@ -261,15 +265,17 @@
  esac
  
  if [[ "${BUILD_IMAGE}" == "yes" ]]; then
@@ -136,6 +136,7 @@
 +    LOCI_ARG_FROM="${REGISTRY_URI}base:${DISTRO}"
      build_loci_base_image $LOCI_ARG_FROM
 -    docker push $LOCI_ARG_FROM
++    [[ "${BASE_IMAGE_ONLY}" == "yes" ]] && exit 0 || true
 +    #docker push $LOCI_ARG_FROM
  else
      fetch_base_image
@@ -147,7 +148,7 @@
  projects=( ${BUILD_PROJECTS} )
  
  pushd ${LOCI_SRC_DIR}
-@@ -278,7 +285,7 @@
+@@ -278,7 +284,7 @@
      if [[ "${projects[0]}" == "requirements" ]]; then
          get_project_image_build_arguments ${projects[0]}
          eval "${docker_build_cmd}"
@@ -156,7 +157,7 @@
          unset projects[0]
      fi
      # clear action from previous install (can be in dev local builds)
-@@ -286,7 +293,8 @@
+@@ -286,7 +292,8 @@
      # Run the rest of the projects with parallel
      for project in ${projects[@]}; do
          get_project_image_build_arguments $project
