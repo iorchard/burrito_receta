@@ -161,7 +161,12 @@ function get_project_image_build_arguments {
 
     #Prepare tag
     local this_extra_tags="${project}_extra_tag"
-    tag="${REGISTRY_URI}${projectname}:${VERSION}-${TAGGED_PROJECT_REF}-${DISTRO}${!this_extra_tags}"
+    if [[ -n ${VERSION} ]]; then
+      mytag="${VERSION}-${TAGGED_PROJECT_REF}-${DISTRO}${!this_extra_tags}"
+    else
+      mytag="${TAGGED_PROJECT_REF}-${DISTRO}${!this_extra_tags}"
+    fi
+    tag="${REGISTRY_URI}${projectname}:${mytag}"
 
     docker_build_cmd="docker build --network=host ${default_project_extra_build_args} ${build_args} --tag $tag ."
 }
@@ -175,7 +180,7 @@ BASE_IMAGE=${BASE_IMAGE:-"gcr.io/google_containers/ubuntu-slim:0.14"}
 # dockerhub user. Example: "docker.io/openstackhelm"
 REGISTRY_URI=${REGISTRY_URI:-"172.17.0.1:5000/openstackhelm/"}
 # The image tag used.
-VERSION=${VERSION:-"latest"}
+#VERSION=${VERSION:-"latest"}
 # The openstack branch to build, if no per project branch is given.
 OPENSTACK_VERSION=${OPENSTACK_VERSION:-"master"}
 # Specify OS distribution
@@ -197,6 +202,8 @@ heat_pip_packages=${heat_pip_packages:-"pycrypto"}
 heat_dist_packages=${heat_dist_packages:-"curl"}
 barbican_profiles=${barbican_profiles:-"fluent"}
 barbican_pip_packages=${barbican_pip_packages:-"pycrypto"}
+barbican_dist_packages=${barbican_dist_packages:-"'python3-dev gcc'"}
+barbican_pip_args=${barbican_pip_args:-"'--only-binary :none:'"}
 glance_profiles=${glance_profiles:-"'fluent ceph'"}
 glance_pip_packages=${glance_pip_packages:-"'pycrypto python-swiftclient'"}
 cinder_profiles=${cinder_profiles:-"'fluent lvm ceph qemu apache nfs'"}

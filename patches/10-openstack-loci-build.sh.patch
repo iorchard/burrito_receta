@@ -1,5 +1,5 @@
 --- openstack-helm-images/openstack/loci/build.sh	2023-10-23 18:19:16.966814083 +0900
-+++ patches/openstack-helm-images/openstack/loci/build.sh	2023-12-20 11:53:10.501814088 +0900
++++ patches/openstack-helm-images/openstack/loci/build.sh	2024-01-24 19:39:41.543534675 +0900
 @@ -1,7 +1,8 @@
 -#!/bin/bash
 +#!/bin/bash -x
@@ -70,8 +70,26 @@
          fi
  
          #Add profiles argument if <project>_profiles env var is defined
-@@ -169,8 +178,8 @@
- VERSION=${VERSION:-"latest"}
+@@ -152,7 +161,12 @@
+ 
+     #Prepare tag
+     local this_extra_tags="${project}_extra_tag"
+-    tag="${REGISTRY_URI}${projectname}:${VERSION}-${TAGGED_PROJECT_REF}-${DISTRO}${!this_extra_tags}"
++    if [[ -n ${VERSION} ]]; then
++      mytag="${VERSION}-${TAGGED_PROJECT_REF}-${DISTRO}${!this_extra_tags}"
++    else
++      mytag="${TAGGED_PROJECT_REF}-${DISTRO}${!this_extra_tags}"
++    fi
++    tag="${REGISTRY_URI}${projectname}:${mytag}"
+ 
+     docker_build_cmd="docker build --network=host ${default_project_extra_build_args} ${build_args} --tag $tag ."
+ }
+@@ -166,11 +180,11 @@
+ # dockerhub user. Example: "docker.io/openstackhelm"
+ REGISTRY_URI=${REGISTRY_URI:-"172.17.0.1:5000/openstackhelm/"}
+ # The image tag used.
+-VERSION=${VERSION:-"latest"}
++#VERSION=${VERSION:-"latest"}
  # The openstack branch to build, if no per project branch is given.
  OPENSTACK_VERSION=${OPENSTACK_VERSION:-"master"}
 -# Sepcify OS distribution
@@ -81,12 +99,8 @@
  # extra build arguments for the base image. See loci's dockerfiles for
  # arguments that could be used for example.
  base_extra_build_args=${base_extra_build_args:-"--force-rm --pull --no-cache"}
-@@ -188,16 +197,14 @@
- heat_dist_packages=${heat_dist_packages:-"curl"}
- barbican_profiles=${barbican_profiles:-"fluent"}
- barbican_pip_packages=${barbican_pip_packages:-"pycrypto"}
--barbican_dist_packages=${barbican_dist_packages:-"'python3-dev gcc'"}
--barbican_pip_args=${barbican_pip_args:-"'--only-binary :none:'"}
+@@ -192,12 +206,12 @@
+ barbican_pip_args=${barbican_pip_args:-"'--only-binary :none:'"}
  glance_profiles=${glance_profiles:-"'fluent ceph'"}
  glance_pip_packages=${glance_pip_packages:-"'pycrypto python-swiftclient'"}
 -cinder_profiles=${cinder_profiles:-"'fluent lvm ceph qemu apache'"}
@@ -100,7 +114,7 @@
  nova_pip_packages=${nova_pip_packages:-"pycrypto"}
  nova_dist_packages=${nova_dist_packages:-"net-tools"}
  horizon_profiles=${horizon_profiles:-"'fluent apache'"}
-@@ -220,6 +227,7 @@
+@@ -220,6 +234,7 @@
  monasca_api_pip_packages=${monasca_api_pip_packages:-"influxdb cassandra-driver sqlalchemy"}
  masakari_profiles=${masakari_profiles:-"'masakari'"}
  masakari_monitors_profiles=${masakari_monitors_profiles:-"'masakari-monitors'"}
@@ -108,7 +122,7 @@
  ####################
  # Action starts here
  ####################
-@@ -237,10 +245,7 @@
+@@ -237,10 +252,7 @@
  # Test if BASE_IMAGE should be built from LOCI dockerfiles.
  case ${BASE_IMAGE} in
      ubuntu)
@@ -119,7 +133,7 @@
          ;;
      leap15)
          BUILD_IMAGE="yes"
-@@ -248,7 +253,6 @@
+@@ -248,7 +260,6 @@
          ;;
      centos)
          BUILD_IMAGE="yes"
@@ -127,7 +141,7 @@
          ;;
      debian)
          BUILD_IMAGE="yes"
-@@ -261,15 +265,17 @@
+@@ -261,15 +272,17 @@
  esac
  
  if [[ "${BUILD_IMAGE}" == "yes" ]]; then
@@ -148,7 +162,7 @@
  projects=( ${BUILD_PROJECTS} )
  
  pushd ${LOCI_SRC_DIR}
-@@ -278,7 +284,7 @@
+@@ -278,7 +291,7 @@
      if [[ "${projects[0]}" == "requirements" ]]; then
          get_project_image_build_arguments ${projects[0]}
          eval "${docker_build_cmd}"
@@ -157,7 +171,7 @@
          unset projects[0]
      fi
      # clear action from previous install (can be in dev local builds)
-@@ -286,7 +292,8 @@
+@@ -286,7 +299,8 @@
      # Run the rest of the projects with parallel
      for project in ${projects[@]}; do
          get_project_image_build_arguments $project

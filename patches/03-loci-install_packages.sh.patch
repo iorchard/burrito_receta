@@ -1,5 +1,5 @@
 --- loci/scripts/install_packages.sh	2023-10-18 17:02:57.106795736 +0900
-+++ patches/loci/scripts/install_packages.sh	2023-12-20 11:59:51.301693737 +0900
++++ patches/loci/scripts/install_packages.sh	2024-01-24 19:02:36.363887166 +0900
 @@ -33,7 +33,9 @@
              fi
              ;;
