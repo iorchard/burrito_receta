@@ -3,7 +3,12 @@ set -e
 SCRIPT=$(realpath $0)
 SCRIPT_DIR=$(dirname ${SCRIPT})
 
-OSNAMES=(keystone glance cinder neutron nova horizon)
+ENVFILE="${SCRIPT_DIR}/../../../.env"
+if [[ -f "${ENVFILE}" ]]; then
+  . ${ENVFILE}
+fi
+
+OSNAMES=(requirements heat keystone glance placement cinder neutron nova horizon barbican)
 function USAGE() {
   echo "USAGE: $(basename $0) [-h] [-b] [-r] [-v] <openstack_project_name>"
   echo 
@@ -61,13 +66,14 @@ else
   USAGE
   exit 1
 fi
-OPENSTACK_VERSION="stable/yoga"
+OPENSTACK_VERSION="stable/2023.1"
 PROJECT_REF=${PROJECT_REF:-${OPENSTACK_VERSION}}
-VERSION=${VERSION:-0.0.1}
+#VERSION=${VERSION:-0.0.1}
 REGISTRY_URI=${REGISTRY_URI:-jijisa/}
 
 BASE_IMAGE="ubuntu"
-WHEELS="jijisa/requirements:skb-yoga-ubuntu_jammy"
+#WHEELS="jijisa/requirements:skb-yoga-ubuntu_jammy"
+WHEELS="jijisa/requirements:2023.1-ubuntu_jammy"
 #nova_project_repo="https://github.com/jijisa/openstack-nova.git"
 #nova_project_ref="stable/yoga-ovspatch"
 #cinder_project_repo="https://github.com/jijisa/openstack-cinder.git"
@@ -78,8 +84,8 @@ LOCI_SRC_DIR="${SCRIPT_DIR}/../../../loci"
 keystone_pip_packages=${keystone_pip_packages:-"'python-openstackclient'"}
 heat_pip_packages=${heat_pip_packages:-"''"}
 barbican_pip_packages=${barbican_pip_packages:-"''"}
-glance_pip_packages=${glance_pip_packages:-"'pynacl python-cinderclient python-swiftclient os-brick oslo.privsep oslo.rootwrap'"}
-cinder_pip_packages=${cinder_pip_packages:-"'python-swiftclient'"}
+glance_pip_packages=${glance_pip_packages:-"'python-cinderclient python-swiftclient os-brick oslo.privsep oslo.rootwrap'"}
+cinder_pip_packages=${cinder_pip_packages:-"'python-3parclient>=4.0,<5.0 python-swiftclient'"}
 neutron_pip_packages=${neutron_pip_packages:-"''"}
 nova_pip_packages=${nova_pip_packages:-"''"}
 horizon_pip_packages=${horizon_pip_packages:-"''"}
@@ -88,7 +94,7 @@ congress_pip_packages=${congress_pip_packages:-"'python-congressclient'"}
 magnum_pip_packages=${magnum_pip_packages:-"''"}
 ironic_pip_packages=${ironic_pip_packages:-"''"}
 neutron_sriov_pip_packages=${neutron_sriov_pip_packages:-"'networking-baremetal'"}
-placement_pip_packages=${placement_pip_packages:-"httplib2"}
+placement_pip_packages=${placement_pip_packages:-"'httplib2'"}
 source ${SCRIPT_DIR}/build.sh
 
 echo "Complete to build ${tag}."
