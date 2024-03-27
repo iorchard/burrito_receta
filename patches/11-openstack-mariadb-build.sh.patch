@@ -1,14 +1,24 @@
---- openstack-helm-images/mariadb/build.sh	2023-12-19 11:30:09.035612488 +0900
-+++ patches/openstack-helm-images/mariadb/build.sh	2023-12-20 11:49:18.549886766 +0900
+--- openstack-helm-images/mariadb/build.sh	2024-03-27 14:02:48.455009959 +0900
++++ patches/openstack-helm-images/mariadb/build.sh	2024-03-27 14:04:11.578997259 +0900
 @@ -1,6 +1,10 @@
 -#!/bin/bash
+-SCRIPT=`realpath $0`
+-SCRIPT_DIR=`dirname ${SCRIPT}`
 +#!/bin/bash -x
- SCRIPT=`realpath $0`
- SCRIPT_DIR=`dirname ${SCRIPT}`
-+## get .env in SCRIPT_DIR
-+if [[ -f "${SCRIPT_DIR}/../../.env" ]]; then
-+  . .env
++SCRIPT=$(realpath $0)
++SCRIPT_DIR=$(dirname ${SCRIPT})
++ENVFILE="${SCRIPT_DIR}/../../.env.mariadb"
++if [[ -f "${ENVFILE}" ]]; then
++  . ${ENVFILE}
 +fi
  ## Only build from main folder
  cd ${SCRIPT_DIR}/..
  
+@@ -11,6 +15,7 @@
+ 
+ REGISTRY_URI=${REGISTRY_URI:-"openstackhelm/"}
+ EXTRA_TAG_INFO=${EXTRA_TAG_INFO:-""}
++
+ docker build -f ${IMAGE}/Dockerfile.${DISTRO} --network=host -t ${REGISTRY_URI}${IMAGE}:${VERSION}-${DISTRO}_${DISTRO_VERSION}${EXTRA_TAG_INFO} ${extra_build_args} ${IMAGE}
+ 
+ cd -

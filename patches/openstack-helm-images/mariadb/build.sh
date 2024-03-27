@@ -1,9 +1,9 @@
 #!/bin/bash -x
-SCRIPT=`realpath $0`
-SCRIPT_DIR=`dirname ${SCRIPT}`
-## get .env in SCRIPT_DIR
-if [[ -f "${SCRIPT_DIR}/../../.env" ]]; then
-  . .env
+SCRIPT=$(realpath $0)
+SCRIPT_DIR=$(dirname ${SCRIPT})
+ENVFILE="${SCRIPT_DIR}/../../.env.mariadb"
+if [[ -f "${ENVFILE}" ]]; then
+  . ${ENVFILE}
 fi
 ## Only build from main folder
 cd ${SCRIPT_DIR}/..
@@ -15,6 +15,7 @@ DISTRO_VERSION=${DISTRO_VERSION:-focal}
 
 REGISTRY_URI=${REGISTRY_URI:-"openstackhelm/"}
 EXTRA_TAG_INFO=${EXTRA_TAG_INFO:-""}
+
 docker build -f ${IMAGE}/Dockerfile.${DISTRO} --network=host -t ${REGISTRY_URI}${IMAGE}:${VERSION}-${DISTRO}_${DISTRO_VERSION}${EXTRA_TAG_INFO} ${extra_build_args} ${IMAGE}
 
 cd -
