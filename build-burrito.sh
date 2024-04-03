@@ -13,7 +13,7 @@ function USAGE() {
   echo "USAGE: $(basename $0) [-h] [-b] [-r] [-v] <openstack_project_name>"
   echo 
   echo " -h --help      Display this help message."
-  echo " -b --branch    OpenStack project branch name (default: stable/yoga)"
+  echo " -b --branch    OpenStack project branch name (default: stable/2023.1)"
   echo " -r --repo      OpenStack project repo"
   echo "                (default: https://opendev.org/openstack/<project>)"
   echo " -v --version   Version in image tag."
