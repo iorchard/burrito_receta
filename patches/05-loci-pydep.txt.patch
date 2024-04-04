@@ -1,0 +1,10 @@
+--- loci/pydep.txt	2024-04-04 10:32:52.558467869 +0900
++++ patches/loci/pydep.txt	2024-04-04 10:33:18.826462144 +0900
+@@ -6,6 +6,7 @@
+ neutron-vpnaas  [(neutron vpn)]
+ purestorage     [(cinder purestorage) (nova purestorage) requirements]
+ pymysql         []
++pynacl          []
+ python-ldap     [(keystone ldap)]
+ python-memcached []
+ uwsgi           [barbican]
