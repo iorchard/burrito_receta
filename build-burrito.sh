@@ -3,12 +3,12 @@ set -e
 SCRIPT=$(realpath $0)
 SCRIPT_DIR=$(dirname ${SCRIPT})
 
-OSNAMES=(keystone glance cinder neutron nova horizon)
+OSNAMES=(requirements heat keystone glance placement cinder neutron nova horizon barbican)
 function USAGE() {
   echo "USAGE: $(basename $0) [-h] [-b] [-r] [-v] <openstack_project_name>"
   echo 
   echo " -h --help      Display this help message."
-  echo " -b --branch    OpenStack project branch name (default: stable/yoga)"
+  echo " -b --branch    OpenStack project branch (default: unmaintained/yoga)"
   echo " -r --repo      OpenStack project repo"
   echo "                (default: https://opendev.org/openstack/<project>)"
   echo " -v --version   Version in image tag."
