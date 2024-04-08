@@ -1,12 +1,14 @@
---- loci/scripts/requirements.sh	2023-10-18 17:02:57.106795736 +0900
-+++ patches/loci/scripts/requirements.sh	2023-10-18 17:26:42.866863565 +0900
-@@ -16,9 +16,14 @@
+--- loci/scripts/requirements.sh	2024-04-08 17:49:52.502551821 +0900
++++ patches/loci/scripts/requirements.sh	2024-04-08 17:48:17.354565035 +0900
+@@ -16,9 +16,16 @@
      sed -i '/python-qpid-proton/d' /upper-constraints.txt
  fi
  
 -# Remove python-qpid-proton 0.14.0 as this old version cannot be built in CI
 -# anymore
 -sed -i '/python-qpid-proton===0.14.0/d' /upper-constraints.txt
++# Heechul - upgrade oslo.messaging from 12.13.3 to 14.2.4
++sed -i 's/oslo.messaging===12.13.3/oslo.messaging===14.2.4/' /upper-constraints.txt
 +# Replace ssh-python===0.9.0 to ssh-python===1.0.0
 +sed -i 's/ssh-python===0.9.0/ssh-python===1.0.0/' /upper-constraints.txt
 +sed -i 's/immutables===0.16/immutables===0.20/' /upper-constraints.txt
