@@ -16,6 +16,8 @@ if (( $(openssl version | awk -F'[ .]' '{print $3}') >= 1 )); then
     sed -i '/python-qpid-proton/d' /upper-constraints.txt
 fi
 
+# Heechul - upgrade oslo.messaging from 12.13.3 to 14.2.4
+sed -i 's/oslo.messaging===12.13.3/oslo.messaging===14.2.4/' /upper-constraints.txt
 # Replace ssh-python===0.9.0 to ssh-python===1.0.0
 sed -i 's/ssh-python===0.9.0/ssh-python===1.0.0/' /upper-constraints.txt
 sed -i 's/immutables===0.16/immutables===0.20/' /upper-constraints.txt
