@@ -3,6 +3,11 @@ set -e
 SCRIPT=$(realpath $0)
 SCRIPT_DIR=$(dirname ${SCRIPT})
 
+ENVFILE="${SCRIPT_DIR}/../../../.env"
+if [[ -f "${ENVFILE}" ]]; then
+  . ${ENVFILE}
+fi
+
 OSNAMES=(requirements heat keystone glance placement cinder neutron nova horizon barbican)
 function USAGE() {
   echo "USAGE: $(basename $0) [-h] [-b] [-r] [-v] <openstack_project_name>"
@@ -63,14 +68,10 @@ else
 fi
 OPENSTACK_VERSION="unmaintained/yoga"
 PROJECT_REF=${PROJECT_REF:-${OPENSTACK_VERSION}}
-VERSION=${VERSION:-0.0.1}
 REGISTRY_URI=${REGISTRY_URI:-jijisa/}
 
 BASE_IMAGE="ubuntu"
 WHEELS="jijisa/requirements:skb-yoga-ubuntu_jammy"
-#nova_project_repo="https://github.com/jijisa/openstack-nova.git"
-#nova_project_ref="stable/yoga-ovspatch"
-#cinder_project_repo="https://github.com/jijisa/openstack-cinder.git"
 DISTRO="ubuntu_jammy"
 LOCI_SRC_DIR="${SCRIPT_DIR}/../../../loci"
 
@@ -78,7 +79,7 @@ LOCI_SRC_DIR="${SCRIPT_DIR}/../../../loci"
 keystone_pip_packages=${keystone_pip_packages:-"'python-openstackclient'"}
 heat_pip_packages=${heat_pip_packages:-"''"}
 barbican_pip_packages=${barbican_pip_packages:-"''"}
-glance_pip_packages=${glance_pip_packages:-"'pynacl python-cinderclient python-swiftclient os-brick oslo.privsep oslo.rootwrap'"}
+glance_pip_packages=${glance_pip_packages:-"'python-cinderclient python-swiftclient os-brick oslo.privsep oslo.rootwrap'"}
 cinder_pip_packages=${cinder_pip_packages:-"'python-swiftclient'"}
 neutron_pip_packages=${neutron_pip_packages:-"''"}
 nova_pip_packages=${nova_pip_packages:-"''"}
