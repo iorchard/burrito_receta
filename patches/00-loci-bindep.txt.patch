@@ -1,5 +1,5 @@
---- loci/bindep.txt	2023-10-23 18:19:16.950814087 +0900
-+++ patches/loci/bindep.txt	2023-12-20 11:57:42.569729930 +0900
+--- loci/bindep.txt	2024-04-12 15:25:16.785254971 +0900
++++ patches/loci/bindep.txt	2024-04-12 15:22:56.993274223 +0900
 @@ -7,7 +7,7 @@
  conntrack                            [platform:dpkg neutron]
  conntrack-tools                      [platform:rpm neutron]
@@ -44,8 +44,8 @@
 +multipath-tools                      [platform:dpkg (glance purestorage) (cinder purestorage) (nova purestorage)]
  mysql                                [platform:rpm placement]
  mysql-client                         [platform:dpkg placement]
-+nfs-common                           [platform:dpkg (cinder nfs) (nova nfs)]
-+nfs-utils                            [platform:rpm (cinder nfs) (nova nfs)]
++nfs-common                           [platform:dpkg (glance nfs) (cinder nfs) (nova nfs)]
++nfs-utils                            [platform:rpm (glance nfs) (cinder nfs) (nova nfs)]
  nginx                                [nginx]
  # latest nss-devel breaks python-nss on centos:9
  nss-devel-3.53.1-17.el8_3            [platform:rpm requirements]
