@@ -1,12 +1,15 @@
---- loci/scripts/requirements.sh	2024-04-08 17:49:52.502551821 +0900
-+++ patches/loci/scripts/requirements.sh	2024-04-08 17:48:17.354565035 +0900
-@@ -16,9 +16,16 @@
+--- loci/scripts/requirements.sh	2024-05-02 17:22:21.544013563 +0900
++++ patches/loci/scripts/requirements.sh	2024-05-02 17:21:57.180019337 +0900
+@@ -16,9 +16,19 @@
      sed -i '/python-qpid-proton/d' /upper-constraints.txt
  fi
  
 -# Remove python-qpid-proton 0.14.0 as this old version cannot be built in CI
 -# anymore
 -sed -i '/python-qpid-proton===0.14.0/d' /upper-constraints.txt
++# Heechul - upgrade glance-store from 3.0.1 to 4.3.3 
++# to fix a bug (https://bugs.launchpad.net/glance-store/+bug/2000584)
++sed -i 's/glance-store===3.0.1/glance-store===4.3.3/' /upper-constraints.txt
 +# Heechul - upgrade oslo.messaging from 12.13.3 to 14.2.4
 +sed -i 's/oslo.messaging===12.13.3/oslo.messaging===14.2.4/' /upper-constraints.txt
 +# Replace ssh-python===0.9.0 to ssh-python===1.0.0

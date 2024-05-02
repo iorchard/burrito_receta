@@ -16,6 +16,9 @@ if (( $(openssl version | awk -F'[ .]' '{print $3}') >= 1 )); then
     sed -i '/python-qpid-proton/d' /upper-constraints.txt
 fi
 
+# Heechul - upgrade glance-store from 3.0.1 to 4.3.3 
+# to fix a bug (https://bugs.launchpad.net/glance-store/+bug/2000584)
+sed -i 's/glance-store===3.0.1/glance-store===4.3.3/' /upper-constraints.txt
 # Heechul - upgrade oslo.messaging from 12.13.3 to 14.2.4
 sed -i 's/oslo.messaging===12.13.3/oslo.messaging===14.2.4/' /upper-constraints.txt
 # Replace ssh-python===0.9.0 to ssh-python===1.0.0
