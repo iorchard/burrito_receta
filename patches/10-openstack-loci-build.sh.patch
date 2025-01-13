@@ -1,5 +1,5 @@
---- openstack-helm-images/openstack/loci/build.sh	2023-10-23 18:19:16.966814083 +0900
-+++ patches/openstack-helm-images/openstack/loci/build.sh	2023-12-20 11:53:10.501814088 +0900
+--- openstack-helm-images/openstack/loci/build.sh	2025-01-13 12:20:10.137499875 +0900
++++ patches/openstack-helm-images/openstack/loci/build.sh	2025-01-13 12:21:08.253465952 +0900
 @@ -1,7 +1,8 @@
 -#!/bin/bash
 +#!/bin/bash -x
@@ -42,7 +42,8 @@
      fi
      #Remove stable/ from the tags, as '/' should not be in tag, and
      #'stable' doesn't bring any extra information
-     TAGGED_PROJECT_REF=${PROJECT_REF/stable\//}
+-    TAGGED_PROJECT_REF=${PROJECT_REF/stable\//}
++    TAGGED_PROJECT_REF=${PROJECT_REF#*/}
      build_args="${build_args} --build-arg PROJECT_REF=${PROJECT_REF}"
  
 -

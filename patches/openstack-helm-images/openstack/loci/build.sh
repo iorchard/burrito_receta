@@ -81,7 +81,7 @@ function get_project_image_build_arguments {
     fi
     #Remove stable/ from the tags, as '/' should not be in tag, and
     #'stable' doesn't bring any extra information
-    TAGGED_PROJECT_REF=${PROJECT_REF/stable\//}
+    TAGGED_PROJECT_REF=${PROJECT_REF#*/}
     build_args="${build_args} --build-arg PROJECT_REF=${PROJECT_REF}"
 
     #Add PROJECT_REPO argument if <project>_project_repo env var is defined
