@@ -13,8 +13,8 @@ function USAGE() {
   echo "USAGE: $(basename $0) [-h] [-b] [-r] [-v] <openstack_project_name>"
   echo 
   echo " -h --help      Display this help message."
-  echo " -b --branch    OpenStack project branch name (default: stable/2023.1)"
-  echo " -r --repo      OpenStack project repo"
+  echo " -b --branch    OpenStack branch name (default: unmaintained/2023.1)"
+  echo " -r --repo      OpenStack repo"
   echo "                (default: https://opendev.org/openstack/<project>)"
   echo " -v --version   Version in image tag."
   echo " <openstack_project_name>"
@@ -66,17 +66,13 @@ else
   USAGE
   exit 1
 fi
-OPENSTACK_VERSION="stable/2023.1"
+OPENSTACK_VERSION="unmaintained/2023.1"
 PROJECT_REF=${PROJECT_REF:-${OPENSTACK_VERSION}}
 #VERSION=${VERSION:-0.0.1}
 REGISTRY_URI=${REGISTRY_URI:-jijisa/}
 
 BASE_IMAGE="ubuntu"
-#WHEELS="jijisa/requirements:skb-yoga-ubuntu_jammy"
 WHEELS="jijisa/requirements:2023.1-ubuntu_jammy"
-#nova_project_repo="https://github.com/jijisa/openstack-nova.git"
-#nova_project_ref="stable/yoga-ovspatch"
-#cinder_project_repo="https://github.com/jijisa/openstack-cinder.git"
 DISTRO="ubuntu_jammy"
 LOCI_SRC_DIR="${SCRIPT_DIR}/../../../loci"
 

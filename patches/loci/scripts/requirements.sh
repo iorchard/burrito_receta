@@ -16,14 +16,14 @@ if (( $(openssl version | awk -F'[ .]' '{print $3}') >= 1 )); then
     sed -i '/python-qpid-proton/d' /upper-constraints.txt
 fi
 
-# Replace ssh-python===0.9.0 to ssh-python===1.0.0
-sed -i 's/ssh-python===0.9.0/ssh-python===1.0.0/' /upper-constraints.txt
-sed -i 's/immutables===0.16/immutables===0.20/' /upper-constraints.txt
-# Remove backports.zoneinfo cannot be installed if python version is >= 3.9.
-sed -i '/backports.zoneinfo/d' /upper-constraints.txt
-# python-nss cannot be installed because of gcc compile error in ubuntu jammy.
-sed -i '/python-nss/d' /upper-constraints.txt
-sed -i '/setproctitle/d' /upper-constraints.txt
+# Remove ryu, anyjson, and pyzmq
+sed -i '/ryu===/d' /upper-constraints.txt
+sed -i '/anyjson===/d' /upper-constraints.txt
+sed -i '/pyzmq===/d' /upper-constraints.txt
+
+# Remove python-qpid-proton 0.14.0 as this old version cannot be built in CI
+# anymore
+sed -i '/python-qpid-proton===0.14.0/d' /upper-constraints.txt
 
 # Setuptools from constraints is not compatible with other constrainted packages
 [[ "${PROJECT_REF}" == "master" ]] && sed -i '/setuptools/d' /upper-constraints.txt

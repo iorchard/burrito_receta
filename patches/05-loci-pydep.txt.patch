@@ -1,6 +1,13 @@
---- loci/pydep.txt	2023-12-19 12:07:28.930949304 +0900
-+++ patches/loci/pydep.txt	2024-03-25 16:28:22.093367249 +0900
-@@ -6,6 +6,7 @@
+--- loci/pydep.txt	2025-01-16 14:48:07.226039765 +0900
++++ patches/loci/pydep.txt	2025-01-16 15:37:51.020469631 +0900
+@@ -3,9 +3,14 @@
+ ldappool        [(keystone ldap)]
+ libvirt-python  [nova]
+ monasca-statsd  [(monasca api)]
++networking-baremetal [(neutron baremetal) requirements]
++neutron-dynamic-routing [(neutron dynamicrouting)]
++neutron-fwaas   [(neutron fwaas)]
++neutron-fwaas-dashboard   [(horizon fwaas)]
  neutron-vpnaas  [(neutron vpn)]
  purestorage     [(cinder purestorage) (nova purestorage) requirements]
  pymysql         []
