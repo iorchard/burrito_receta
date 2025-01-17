@@ -1,9 +1,9 @@
 #!/bin/bash -x
 SCRIPT=`realpath $0`
 SCRIPT_DIR=`dirname ${SCRIPT}`
-## get .env in SCRIPT_DIR
-if [[ -f "${SCRIPT_DIR}/../../.env" ]]; then
-  . .env
+ENVFILE="${SCRIPT_DIR}/../../.env.mariadb"
+if [[ -f "${ENVFILE}" ]]; then
+  . ${ENVFILE}
 fi
 ## Only build from main folder
 cd ${SCRIPT_DIR}/..
