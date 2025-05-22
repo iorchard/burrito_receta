@@ -33,7 +33,7 @@ function fetch_loci_version {
 function build_loci_base_image {
     base_img_tag=$1
     pushd ${LOCI_SRC_DIR}
-        docker build  --network=host -t ${base_img_tag} ${base_extra_build_args} dockerfiles/${DISTRO}
+        docker build  --network=host -t ${base_img_tag} ${base_extra_build_args} dockerfiles/${BASE_IMAGE}
     popd
 }
 
@@ -206,12 +206,12 @@ barbican_dist_packages=${barbican_dist_packages:-"'python3-dev gcc'"}
 barbican_pip_args=${barbican_pip_args:-"'--only-binary :none:'"}
 glance_profiles=${glance_profiles:-"'fluent ceph'"}
 glance_pip_packages=${glance_pip_packages:-"'pycrypto python-swiftclient'"}
-cinder_profiles=${cinder_profiles:-"'fluent lvm ceph qemu apache nfs'"}
+cinder_profiles=${cinder_profiles:-"'fluent lvm ceph qemu apache'"}
 cinder_pip_packages=${cinder_pip_packages:-"'pycrypto python-swiftclient'"}
 neutron_profiles=${neutron_profiles:-"'fluent linuxbridge openvswitch apache vpn'"}
 neutron_dist_packages=${neutron_dist_packages:-"'jq ethtool lshw'"}
 neutron_pip_packages=${neutron_pip_packages:-"'tap-as-a-service pycrypto'"}
-nova_profiles=${nova_profiles:-"'fluent ceph linuxbridge openvswitch configdrive qemu apache migration nfs'"}
+nova_profiles=${nova_profiles:-"'fluent ceph linuxbridge openvswitch configdrive qemu apache migration'"}
 nova_pip_packages=${nova_pip_packages:-"pycrypto"}
 nova_dist_packages=${nova_dist_packages:-"net-tools"}
 horizon_profiles=${horizon_profiles:-"'fluent apache'"}
@@ -247,62 +247,21 @@ fi
 get_loci
 fetch_loci_version
 
-# The BASE_IMAGE provided by the user may require
-# building and re-use LOCI.
-# Test if BASE_IMAGE should be built from LOCI dockerfiles.
-case ${BASE_IMAGE} in
-    ubuntu)
-        BUILD_IMAGE="yes"
-        ;;
-    leap15)
-        BUILD_IMAGE="yes"
-        DISTRO="suse_15"
-        ;;
-    centos)
-        BUILD_IMAGE="yes"
-        ;;
-    debian)
-        BUILD_IMAGE="yes"
-        DISTRO="debian"
-        ;;
-    *)
-        BUILD_IMAGE="no"
-        DISTRO="${DISTRO}"
-        ;;
-esac
-
 if [[ "${BUILD_IMAGE}" == "yes" ]]; then
     #LOCI_ARG_FROM="${REGISTRY_URI}base:${VERSION}-${DISTRO}"
     LOCI_ARG_FROM="${REGISTRY_URI}base:${DISTRO}"
     build_loci_base_image $LOCI_ARG_FROM
     [[ "${BASE_IMAGE_ONLY}" == "yes" ]] && exit 0 || true
     #docker push $LOCI_ARG_FROM
-else
-    fetch_base_image
-    LOCI_ARG_FROM="${BASE_IMAGE}"
 fi
+LOCI_ARG_FROM="${REGISTRY_URI}base:${DISTRO}"
 
 BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cinder monasca_api neutron neutron_sriov nova horizon senlin magnum ironic'}
-projects=( ${BUILD_PROJECTS} )
 
 pushd ${LOCI_SRC_DIR}
-    # The first project should be requirements, if requirements is built.
-    # This one should not be run in parallel.
-    if [[ "${projects[0]}" == "requirements" ]]; then
-        get_project_image_build_arguments ${projects[0]}
-        eval "${docker_build_cmd}"
-        #docker push ${tag}
-        unset projects[0]
-    fi
-    # clear action from previous install (can be in dev local builds)
-    truncate -s 0 ${LOG_PREFIX}actions
-    # Run the rest of the projects with parallel
-    for project in ${projects[@]}; do
-        get_project_image_build_arguments $project
-        #echo "${docker_build_cmd} && docker push ${tag}" >> ${LOG_PREFIX}actions
-        echo "${docker_build_cmd}" >> ${LOG_PREFIX}actions
-    done
-    parallel --group -a ${LOG_PREFIX}actions
+    get_project_image_build_arguments ${BUILD_PROJECTS}
+    echo "${docker_build_cmd}" > ${LOG_PREFIX}actions
+    time bash ${LOG_PREFIX}actions
 popd
 
 # Return to user folder
