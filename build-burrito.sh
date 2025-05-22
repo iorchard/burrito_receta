@@ -8,12 +8,12 @@ if [[ -f "${ENVFILE}" ]]; then
   . ${ENVFILE}
 fi
 
-OSNAMES=(requirements heat keystone glance placement cinder neutron nova horizon barbican)
+OSNAMES=(base requirements heat keystone glance placement cinder neutron nova horizon barbican)
 function USAGE() {
   echo "USAGE: $(basename $0) [-h] [-b] [-r] [-v] <openstack_project_name>"
   echo 
   echo " -h --help      Display this help message."
-  echo " -b --branch    OpenStack branch name (default: unmaintained/2023.1)"
+  echo " -b --branch    OpenStack branch name (default: stable/2024.1)"
   echo " -r --repo      OpenStack repo"
   echo "                (default: https://opendev.org/openstack/<project>)"
   echo " -v --version   Version in image tag."
@@ -66,15 +66,20 @@ else
   USAGE
   exit 1
 fi
-OPENSTACK_VERSION="unmaintained/2023.1"
+OPENSTACK_VERSION="stable/2024.1"
 PROJECT_REF=${PROJECT_REF:-${OPENSTACK_VERSION}}
 #VERSION=${VERSION:-0.0.1}
-REGISTRY_URI=${REGISTRY_URI:-jijisa/}
+REGISTRY_URI=${REGISTRY_URI:-docker.io/jijisa/}
 
 BASE_IMAGE="ubuntu"
-WHEELS="jijisa/requirements:2023.1-ubuntu_jammy"
+WHEELS="jijisa/requirements:2024.1-ubuntu_jammy"
 DISTRO="ubuntu_jammy"
 LOCI_SRC_DIR="${SCRIPT_DIR}/../../../loci"
+
+if [[ "x$BUILD_PROJECTS" == "xbase" ]]; then
+  BUILD_IMAGE="yes"
+  BASE_IMAGE_ONLY="yes"
+fi
 
 #pycrypto was dropped after queens so we need to override the defaults
 keystone_pip_packages=${keystone_pip_packages:-"'python-openstackclient'"}
