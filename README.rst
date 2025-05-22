@@ -20,10 +20,7 @@ Prepare
 
 `Install Docker Engine <https://docs.docker.com/engine/install/>`.
 
-Install parallel package.::
-
-    $ sudo apt -y install parallel # for debian-based distribution
-    $ sudo dnf -y install parallel # for rhel-based distribution
+Install podman and podman-docker package if you want to use podman.
 
 Patch the upstream sources.::
 
@@ -89,5 +86,4 @@ Push the image to your local registry.::
     $ docker tag jijisa/mariadb:10.6.16-ubuntu_focal \
         <your_repo>/mariadb:10.6.16-ubuntu_focal
     $ docker push <your_repo>/mariadb:10.6.16-ubuntu_focal
-
 

@@ -1,0 +1,14 @@
+--- loci/scripts/requirements.sh	2025-01-16 14:48:07.214039773 +0900
++++ patches/loci/scripts/requirements.sh	2025-01-16 15:30:17.700702183 +0900
+@@ -16,6 +16,11 @@
+     sed -i '/python-qpid-proton/d' /upper-constraints.txt
+ fi
+ 
++# Remove ryu, anyjson, and pyzmq
++sed -i '/ryu===/d' /upper-constraints.txt
++sed -i '/anyjson===/d' /upper-constraints.txt
++sed -i '/pyzmq===/d' /upper-constraints.txt
++
+ # Remove python-qpid-proton 0.14.0 as this old version cannot be built in CI
+ # anymore
+ sed -i '/python-qpid-proton===0.14.0/d' /upper-constraints.txt

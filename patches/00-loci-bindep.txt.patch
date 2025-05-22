@@ -1,5 +1,5 @@
---- loci/bindep.txt	2024-04-11 22:40:30.657300368 +0900
-+++ patches/loci/bindep.txt	2024-04-11 22:29:16.441511363 +0900
+--- loci/bindep.txt	2025-05-13 22:21:20.765595683 +0900
++++ patches/loci/bindep.txt	2025-05-13 22:26:49.053606851 +0900
 @@ -7,7 +7,7 @@
  conntrack                            [platform:dpkg neutron]
  conntrack-tools                      [platform:rpm neutron]
@@ -18,7 +18,7 @@
  keepalived                           [neutron (infra keepalived)]
  kvm                                  [platform:rpm (infra libvirt)]
  lapack-devel                         [platform:rpm requirements]
-@@ -66,6 +66,7 @@
+@@ -68,6 +68,7 @@
  libvirt-bin                          [platform:dpkg (infra libvirt)]
  libvirt-dev                          [platform:dpkg requirements]
  libvirt-devel                        [platform:rpm requirements]
@@ -26,7 +26,7 @@
  libvirt0                             [platform:dpkg nova]
  libxml2                              []
  libxml2-dev                          [platform:dpkg requirements]
-@@ -75,6 +76,8 @@
+@@ -77,6 +78,8 @@
  libyaml-dev                          [platform:dpkg requirements]
  libyaml-devel                        [platform:rpm requirements]
  libz-dev                             [platform:dpkg requirements]
@@ -35,11 +35,10 @@
  lvm2                                 [(cinder lvm) (manila lvm)]
  make                                 [platform:rpm requirements]
  mariadb-devel                        [platform:rpm requirements]
-@@ -82,21 +85,26 @@
- mod_auth_mellon                      [platform:rpm (keystone apache mellon)]
+@@ -85,20 +88,26 @@
  mod_auth_openidc                     [platform:rpm (keystone apache openidc)]
  mod_ssl                              [platform:rpm apache]
--mod_wsgi                             [platform:rpm apache]
+ mod_wsgi                             [platform:rpm apache]
 -multipath-tools                      [platform:dpkg (cinder purestorage) (nova purestorage)]
 +multipath-tools                      [platform:dpkg (glance purestorage) (cinder purestorage) (nova purestorage)]
  mysql                                [platform:rpm placement]
@@ -65,15 +64,7 @@
  pcre-devel                           [platform:rpm requirements]
  pkg-config                           [platform:dpkg requirements]
  pkgconfig                            [platform:rpm requirements]
-@@ -105,6 +113,7 @@
- python-mysql                         [platform:rpm (monasca api)]
- python3-dev                          [platform:dpkg requirements]
- python3-devel                        [platform:rpm requirements]
-+python3-mod_wsgi                     [platform:rpm apache]
- python3-mysqldb                      [platform:dpkg (monasca api)]
- python3-rados                        [platform:dpkg (glance ceph) (cinder ceph) (manila ceph) (nova ceph)]
- python3-rbd                          [(glance ceph) (cinder ceph) (manila ceph) (nova ceph)]
-@@ -112,16 +121,20 @@
+@@ -114,16 +123,20 @@
  qemu-img                             [platform:rpm (nova qemu) (ironic qemu) (cinder qemu) (glance qemu)]
  qemu-utils                           [platform:dpkg (nova qemu) (ironic qemu) (cinder qemu) (glance qemu)]
  rabbitmq-server                      [(infra rabbitmq)]
