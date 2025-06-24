@@ -1,5 +1,5 @@
---- loci/bindep.txt	2025-05-13 22:21:20.765595683 +0900
-+++ patches/loci/bindep.txt	2025-05-13 22:26:49.053606851 +0900
+--- loci/bindep.txt	2025-05-28 16:25:28.839990494 +0900
++++ patches/loci/bindep.txt	2025-05-28 16:26:33.551729948 +0900
 @@ -7,7 +7,7 @@
  conntrack                            [platform:dpkg neutron]
  conntrack-tools                      [platform:rpm neutron]
@@ -35,7 +35,7 @@
  lvm2                                 [(cinder lvm) (manila lvm)]
  make                                 [platform:rpm requirements]
  mariadb-devel                        [platform:rpm requirements]
-@@ -85,20 +88,26 @@
+@@ -85,20 +88,27 @@
  mod_auth_openidc                     [platform:rpm (keystone apache openidc)]
  mod_ssl                              [platform:rpm apache]
  mod_wsgi                             [platform:rpm apache]
@@ -56,6 +56,7 @@
  openldap-devel                       [platform:rpm requirements]
  openssh-client                       [platform:dpkg (nova migration)]
  openssh-clients                      [platform:rpm (nova migration)]
++openssh-server                       [platform:dpkg (nova migration)]
  openssl-devel                        [platform:rpm requirements]
  openvswitch                          [platform:rpm (neutron openvswitch) (nova openvswitch) (infra openvswitch)]
  openvswitch-switch                   [platform:dpkg (neutron openvswitch) (nova openvswitch) (infra openvswitch)]
@@ -64,7 +65,7 @@
  pcre-devel                           [platform:rpm requirements]
  pkg-config                           [platform:dpkg requirements]
  pkgconfig                            [platform:rpm requirements]
-@@ -114,16 +123,20 @@
+@@ -114,16 +124,20 @@
  qemu-img                             [platform:rpm (nova qemu) (ironic qemu) (cinder qemu) (glance qemu)]
  qemu-utils                           [platform:dpkg (nova qemu) (ironic qemu) (cinder qemu) (glance qemu)]
  rabbitmq-server                      [(infra rabbitmq)]

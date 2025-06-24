@@ -1,6 +1,6 @@
---- loci/pydep.txt	2025-05-13 20:14:32.000933541 +0900
-+++ patches/loci/pydep.txt	2025-05-13 19:46:28.657795479 +0900
-@@ -4,9 +4,13 @@
+--- loci/pydep.txt	2025-05-26 15:56:04.296166267 +0900
++++ patches/loci/pydep.txt	2025-05-26 15:55:31.449296644 +0900
+@@ -4,9 +4,14 @@
  libvirt-python  [nova]
  monasca-statsd  [(monasca api)]
  networking-baremetal [(neutron baremetal) requirements]
@@ -9,6 +9,7 @@
 +neutron-fwaas-dashboard   [(horizon fwaas)]
  neutron-vpnaas  [(neutron vpn)]
  purestorage     [(cinder purestorage) (nova purestorage) requirements]
++pymemcache      [horizon]
  pymysql         []
 +pynacl          []
  python-ldap     [(keystone ldap)]

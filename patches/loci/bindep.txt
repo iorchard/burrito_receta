@@ -103,6 +103,7 @@ open-iscsi                           [platform:dpkg (glance purestorage) (cinder
 openldap-devel                       [platform:rpm requirements]
 openssh-client                       [platform:dpkg (nova migration)]
 openssh-clients                      [platform:rpm (nova migration)]
+openssh-server                       [platform:dpkg (nova migration)]
 openssl-devel                        [platform:rpm requirements]
 openvswitch                          [platform:rpm (neutron openvswitch) (nova openvswitch) (infra openvswitch)]
 openvswitch-switch                   [platform:dpkg (neutron openvswitch) (nova openvswitch) (infra openvswitch)]
