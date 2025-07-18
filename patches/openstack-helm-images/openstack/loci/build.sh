@@ -286,23 +286,9 @@ BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cin
 projects=( ${BUILD_PROJECTS} )
 
 pushd ${LOCI_SRC_DIR}
-    # The first project should be requirements, if requirements is built.
-    # This one should not be run in parallel.
-    if [[ "${projects[0]}" == "requirements" ]]; then
-        get_project_image_build_arguments ${projects[0]}
-        eval "${docker_build_cmd}"
-        #docker push ${tag}
-        unset projects[0]
-    fi
-    # clear action from previous install (can be in dev local builds)
-    truncate -s 0 ${LOG_PREFIX}actions
-    # Run the rest of the projects with parallel
-    for project in ${projects[@]}; do
-        get_project_image_build_arguments $project
-        #echo "${docker_build_cmd} && docker push ${tag}" >> ${LOG_PREFIX}actions
-        echo "${docker_build_cmd}" >> ${LOG_PREFIX}actions
-    done
-    parallel --group -a ${LOG_PREFIX}actions
+    get_project_image_build_arguments ${BUILD_PROJECTS}
+    echo "${docker_build_cmd}" > ${LOG_PREFIX}actions
+    time bash ${LOG_PREFIX}actions
 popd
 
 # Return to user folder

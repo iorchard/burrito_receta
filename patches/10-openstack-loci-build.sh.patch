@@ -1,5 +1,5 @@
---- openstack-helm-images/openstack/loci/build.sh	2025-01-16 14:48:07.230039763 +0900
-+++ patches/openstack-helm-images/openstack/loci/build.sh	2025-01-16 14:47:54.182046684 +0900
+--- openstack-helm-images/openstack/loci/build.sh	2025-07-18 14:48:34.422961446 +0900
++++ patches/openstack-helm-images/openstack/loci/build.sh	2025-07-18 14:47:38.389229049 +0900
 @@ -1,7 +1,8 @@
 -#!/bin/bash
 +#!/bin/bash -x
@@ -142,7 +142,7 @@
          ;;
      debian)
          BUILD_IMAGE="yes"
-@@ -261,15 +272,17 @@
+@@ -261,34 +272,23 @@
  esac
  
  if [[ "${BUILD_IMAGE}" == "yes" ]]; then
@@ -163,22 +163,25 @@
  projects=( ${BUILD_PROJECTS} )
  
  pushd ${LOCI_SRC_DIR}
-@@ -278,7 +291,7 @@
-     if [[ "${projects[0]}" == "requirements" ]]; then
-         get_project_image_build_arguments ${projects[0]}
-         eval "${docker_build_cmd}"
+-    # The first project should be requirements, if requirements is built.
+-    # This one should not be run in parallel.
+-    if [[ "${projects[0]}" == "requirements" ]]; then
+-        get_project_image_build_arguments ${projects[0]}
+-        eval "${docker_build_cmd}"
 -        docker push ${tag}
-+        #docker push ${tag}
-         unset projects[0]
-     fi
-     # clear action from previous install (can be in dev local builds)
-@@ -286,7 +299,8 @@
-     # Run the rest of the projects with parallel
-     for project in ${projects[@]}; do
-         get_project_image_build_arguments $project
+-        unset projects[0]
+-    fi
+-    # clear action from previous install (can be in dev local builds)
+-    truncate -s 0 ${LOG_PREFIX}actions
+-    # Run the rest of the projects with parallel
+-    for project in ${projects[@]}; do
+-        get_project_image_build_arguments $project
 -        echo "${docker_build_cmd} && docker push ${tag}" >> ${LOG_PREFIX}actions
-+        #echo "${docker_build_cmd} && docker push ${tag}" >> ${LOG_PREFIX}actions
-+        echo "${docker_build_cmd}" >> ${LOG_PREFIX}actions
-     done
-     parallel --group -a ${LOG_PREFIX}actions
+-    done
+-    parallel --group -a ${LOG_PREFIX}actions
++    get_project_image_build_arguments ${BUILD_PROJECTS}
++    echo "${docker_build_cmd}" > ${LOG_PREFIX}actions
++    time bash ${LOG_PREFIX}actions
  popd
+ 
+ # Return to user folder
