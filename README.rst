@@ -20,15 +20,15 @@ Prepare
 
 `Install Docker Engine <https://docs.docker.com/engine/install/>`.
 
-Install parallel package.::
-
-    $ sudo apt -y install parallel # for debian-based distribution
-    $ sudo dnf -y install parallel # for rhel-based distribution
-
 Patch the upstream sources.::
 
     $ cd burrito_receta
     $ ./patch.sh
+
+Copy .env.sample to .env.::
+
+    $ cp .env.sample .env
+
 
 Build openstack-helm image
 ---------------------------
